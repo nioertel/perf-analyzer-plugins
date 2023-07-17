@@ -38,6 +38,10 @@ public class HikariJdbcMetricsEndpoint {
 		}
 	}
 
+	public void registerAdditionalDatasSource(EnhancedHikariDataSource dataSource) {
+		connectionMetricsByPool.put(dataSource.getPoolName(), dataSource.getConnectionMetrics());
+	}
+
 	@ReadOperation
 	public JdbcConnectionStatsDescriptors hikariJdbcMetrics(@Nullable Boolean includeStacktraces) {
 		return hikariJdbcMetrics(null, null, includeStacktraces);

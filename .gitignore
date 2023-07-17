@@ -29,3 +29,4 @@ org.eclipse.m2e.core.prefs
 .classpath
 .settings
 target
+.factorypath
