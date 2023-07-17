@@ -8,14 +8,9 @@
 		<artifactId>perf-analyzer-plugins</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>perf-analyzer-plugins-jdbc</artifactId>
+	<artifactId>perf-analyzer-plugins-common</artifactId>
 
 	<dependencies>
-		<dependency>
-			<groupId>io.github.nioertel.perf</groupId>
-			<artifactId>perf-analyzer-plugins-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>

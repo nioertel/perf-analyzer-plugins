@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.nioertel.perf.jdbc.utils.ClassUtils;
-import io.github.nioertel.perf.jdbc.utils.Identifiable;
+import io.github.nioertel.perf.utils.ClassUtils;
+import io.github.nioertel.perf.utils.Identifiable;
 
 class JdbcConnectionInvocationHandler implements InvocationHandler {
 

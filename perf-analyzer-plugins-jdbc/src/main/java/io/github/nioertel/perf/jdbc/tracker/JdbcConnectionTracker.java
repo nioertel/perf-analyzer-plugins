@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import io.github.nioertel.perf.jdbc.utils.ThrowingSupplier;
+import io.github.nioertel.perf.utils.ThrowingSupplier;
 
 public class JdbcConnectionTracker {
 
