@@ -22,9 +22,12 @@
 	</properties>
 
 	<modules>
-		<module>perf-analyzer-plugins-common</module>
-		<module>perf-analyzer-plugins-jdbc</module>
-		<module>perf-analyzer-plugins-jdbc-spring-boot</module>
+		<module>perf-analyzer-common</module>
+		<module>perf-analyzer-executors</module>
+		<module>perf-analyzer-executors-spring-boot</module>
+		<module>perf-analyzer-jdbc</module>
+		<module>perf-analyzer-jdbc-spring-boot</module>
+		<module>perf-analyzer-test-helper</module>
 	</modules>
 
 	<dependencyManagement>

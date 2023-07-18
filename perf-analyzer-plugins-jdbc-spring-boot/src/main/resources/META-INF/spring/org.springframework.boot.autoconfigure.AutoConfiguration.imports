@@ -1,2 +1,0 @@
-io.github.nioertel.perf.jdbc.datasource.EnhancedDataSourceAutoConfiguration
-io.github.nioertel.perf.jdbc.micrometer.JdbcMetricsActuatorEndpointsAutoConfiguration

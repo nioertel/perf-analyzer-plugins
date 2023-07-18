@@ -1,7 +1,7 @@
 # perf-analyzer-plugins
 Application plugins for performance analysis.
 
-## perf-analyzer-plugins-jdbc
+## perf-analyzer-jdbc
 ### Goals of this plugin
 - Provide a `java.sql.Connection` proxy that provides detailed insightes that may be useful when analyzing performance issues
 - Add minimal performance overhead so this can be active by default in production
@@ -13,7 +13,7 @@ Maven:
 ```xml
 <dependency>
     <groupId>io.github.nioertel.perf</groupId>
-    <artifactId>perf-analyzer-plugins-jdbc</artifactId>
+    <artifactId>perf-analyzer-jdbc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
@@ -42,9 +42,9 @@ try (EnhancedHikariDataSource dataSource = new EnhancedHikariDataSource(config))
 // ... boiler plate code
 ```
 
-## perf-analyzer-plugins-jdbc-spring-boot
+## perf-analyzer-jdbc-spring-boot
 ### Goals of this plugin
-- Provide Spring Boot integration of [perf-analyzer-plugins-jdbc](#perf-analyzer-plugins-jdbc), including
+- Provide Spring Boot integration of [perf-analyzer-jdbc](#perf-analyzer-jdbc), including
   - auto configuration for `Enhanced*DataSource` (such as EnhancedHikariDataSource) if `spring.datasource.type` is set accordingly
 - Actuator endpoint `/actuator/jdbcMetrics`
 
@@ -53,7 +53,7 @@ Maven:
 ```xml
 <dependency>
     <groupId>io.github.nioertel.perf</groupId>
-    <artifactId>perf-analyzer-plugins-jdbc-spring-boot</artifactId>
+    <artifactId>perf-analyzer-jdbc-spring-boot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
@@ -69,6 +69,14 @@ Java Code Snippet:
 // TODO
 ```
 
-## perf-analyzer-plugins-common
+## perf-analyzer-executors
+TODO
+
+## perf-analyzer-executors-spring-boot
+TODO
+
+## perf-analyzer-common
 Shared utilities which are used across the different modules.
 
+## perf-analyzer-test-helper
+Tools for testing of the perf-analyzer-plugins. Only for internal use currently.
