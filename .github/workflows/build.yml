@@ -17,9 +17,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-     strategy:
-       matrix:
-         java-version: [ 11, 17 ]
+    strategy:
+      matrix:
+        java-version: [ 11, 17 ]
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
