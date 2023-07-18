@@ -14,7 +14,7 @@ public class JdbcConnectionTracker {
 
 	private final JdbcConnectionMetricsHousekeeper jdbcConnectionMetricsHousekeeper;
 
-	private final String poolName;
+	private String poolName;
 
 	private final AtomicLong connectionInstanceIdGenerator = new AtomicLong();
 
@@ -23,6 +23,11 @@ public class JdbcConnectionTracker {
 		this.jdbcConnectionMetrics = new JdbcConnectionMetricsTracker(poolName);
 		this.jdbcConnectionMetricsHousekeeper = new JdbcConnectionMetricsHousekeeper();
 		jdbcConnectionMetricsHousekeeper.start(jdbcConnectionMetrics, 30L, TimeUnit.SECONDS);
+	}
+
+	public void setPoolName(String poolName) {
+		this.poolName = poolName;
+		jdbcConnectionMetrics.setPoolName(poolName);
 	}
 
 	public String getPoolName() {

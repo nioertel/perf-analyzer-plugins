@@ -48,4 +48,10 @@ public class EnhancedHikariDataSource extends HikariDataSource {
 	public Connection getConnection(String username, String password) throws SQLException {
 		throw new SQLFeatureNotSupportedException();
 	}
+
+	@Override
+	public void setPoolName(String name) {
+		super.setPoolName(name);
+		jdbcConnectionTracker.setPoolName(name);
+	}
 }

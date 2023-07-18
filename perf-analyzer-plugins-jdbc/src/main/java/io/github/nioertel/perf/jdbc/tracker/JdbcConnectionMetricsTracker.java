@@ -13,7 +13,7 @@ class JdbcConnectionMetricsTracker implements JdbcConnectionMetrics {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JdbcConnectionMetricsTracker.class);
 
-	private final String poolName;
+	private String poolName;
 
 	private final Map<String, AtomicLong> methodInvocationCounter = new ConcurrentHashMap<>();
 
@@ -89,6 +89,8 @@ class JdbcConnectionMetricsTracker implements JdbcConnectionMetrics {
 	}
 
 	/**
+	 * Ensure that no memory leaks are created by:
+	 * <ul>
 	 * <li>Remove connection stats that have no connection assigned (i.e. week reference is empty)</li>
 	 * <li>Remove connection stats for which there is another connection stat that references the same physical connection
 	 * and has a later acquired timestamp</li>
@@ -97,12 +99,16 @@ class JdbcConnectionMetricsTracker implements JdbcConnectionMetrics {
 	 * </ul>
 	 */
 	void cleanup() {
-		
+		// TODO: implement me
 	}
 
 	@Override
 	public String getPoolName() {
 		return poolName;
+	}
+
+	public void setPoolName(String poolName) {
+		this.poolName = poolName;
 	}
 
 	@Override

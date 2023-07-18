@@ -2,8 +2,10 @@ package io.github.nioertel.perf.jdbc.micrometer;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -20,7 +22,17 @@ public class JdbcMetricsActuatorEndpointsAutoConfiguration {
 
 	@ConditionalOnClass({ HikariConfig.class })
 	@Bean
-	HikariJdbcMetricsEndpoint hikariJdbcMetricsEndpoint(List<EnhancedHikariDataSource> hikariDataSources) {
-		return new HikariJdbcMetricsEndpoint(hikariDataSources);
+	JdbcConnectionMetricsSupplier hikariJdbcMetricsSupplier(List<EnhancedHikariDataSource> hikariDataSources) {
+		return new JdbcConnectionMetricsSupplier(//
+				hikariDataSources.stream()//
+						.map(EnhancedHikariDataSource::getConnectionMetrics)//
+						.collect(Collectors.toList())//
+		);
+	}
+
+	@ConditionalOnBean({ JdbcConnectionMetricsSupplier.class })
+	@Bean
+	JdbcMetricsEndpoint jdbcMetricsEndpoint(List<JdbcConnectionMetricsSupplier> connectionMetricsSuppliers) {
+		return new JdbcMetricsEndpoint(connectionMetricsSuppliers);
 	}
 }

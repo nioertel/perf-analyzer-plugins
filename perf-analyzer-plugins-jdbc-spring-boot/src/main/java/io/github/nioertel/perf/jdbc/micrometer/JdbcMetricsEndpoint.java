@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -18,16 +19,19 @@ import io.github.nioertel.perf.jdbc.tracker.JdbcConnectionMetrics;
 import io.github.nioertel.perf.jdbc.tracker.JdbcConnectionStatsSnapshot;
 import io.github.nioertel.perf.utils.DateHelper;
 
-@Endpoint(id = "hikariJdbcMetrics")
-public class HikariJdbcMetricsEndpoint {
+@Endpoint(id = "jdbcMetrics")
+public class JdbcMetricsEndpoint {
 
+	// TODO: If we have multiple pools with the same name, this doesn't work
 	private final Map<String, JdbcConnectionMetrics> connectionMetricsByPool;
 
-	HikariJdbcMetricsEndpoint(List<EnhancedHikariDataSource> hikariDataSources) {
-		this.connectionMetricsByPool = hikariDataSources.stream().collect(Collectors.toMap(//
-				ds -> ds.getPoolName(), //
-				ds -> ds.getConnectionMetrics()//
-		));
+	JdbcMetricsEndpoint(List<JdbcConnectionMetricsSupplier> connectionMetricsSuppliers) {
+		this.connectionMetricsByPool = connectionMetricsSuppliers.stream()//
+				.flatMap(cms -> cms.getConnectionMetrics().stream())//
+				.collect(Collectors.toMap(//
+						cm -> cm.getPoolName(), //
+						Function.identity()//
+				));
 	}
 
 	private static boolean shouldIncludeStacktraces(Boolean includeStacktraces) {

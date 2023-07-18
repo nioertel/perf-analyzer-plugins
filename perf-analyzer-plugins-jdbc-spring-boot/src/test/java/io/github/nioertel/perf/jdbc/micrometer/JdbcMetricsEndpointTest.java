@@ -42,13 +42,13 @@ import io.github.nioertel.perf.utils.DateHelper;
 				"spring.datasource.hikari.minimum-idle=1", //
 				"spring.datasource.hikari.maximum-pool-size=1"//
 		})
-class HikariJdbcMetricsEndpointTest {
+class JdbcMetricsEndpointTest {
 
 	@Autowired
 	private List<HikariDataSource> autoConfiguredDataSources;
 
 	@Autowired
-	private HikariJdbcMetricsEndpoint hikariMetricsEndpoint;
+	private JdbcMetricsEndpoint hikariMetricsEndpoint;
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -61,8 +61,8 @@ class HikariJdbcMetricsEndpointTest {
 	}
 
 	@Test
-	void actuatorShouldPublishHikariJdbcMetricsEndpoint() {
-		ResponseEntity<String> health = restTemplate.getForEntity("/actuator/hikariJdbcMetrics", String.class, Map.of());
+	void actuatorShouldPublishjdbcMetricsEndpoint() {
+		ResponseEntity<String> health = restTemplate.getForEntity("/actuator/jdbcMetrics", String.class, Map.of());
 		BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
 		BDDAssertions.assertThat((Map<?, ?>) JsonPath.parse(health.getBody()).json()).allSatisfy((k, v) -> {
 			BDDAssertions.assertThat(k).isEqualTo("connectionStatsByPool");
@@ -70,7 +70,7 @@ class HikariJdbcMetricsEndpointTest {
 	}
 
 	@Test
-	void actuatorShouldPublishHikariJdbcMetricsForAutoConfiguredDataSource() throws SQLException {
+	void actuatorShouldPublishjdbcMetricsForAutoConfiguredDataSource() throws SQLException {
 		LocalDateTime beforeAcquire = LocalDateTime.now(DateHelper.EUROPE_BERLIN).truncatedTo(ChronoUnit.MILLIS);
 		try (IdentifiableConnection c = (IdentifiableConnection) autoConfiguredDataSources.get(0).getConnection()) {
 			LocalDateTime acquired = LocalDateTime.now(DateHelper.EUROPE_BERLIN).truncatedTo(ChronoUnit.MILLIS);
@@ -81,7 +81,7 @@ class HikariJdbcMetricsEndpointTest {
 				BDDAssertions.assertThat(r.getInt(1)).isEqualTo(5);
 			}
 			// connection should be visible in Actuator endpoint
-			ResponseEntity<String> health = restTemplate.getForEntity("/actuator/hikariJdbcMetrics", String.class, Map.of());
+			ResponseEntity<String> health = restTemplate.getForEntity("/actuator/jdbcMetrics", String.class, Map.of());
 			BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
 			System.out.println(health.getBody());
 			verifyPoolMetricsForOneActiveConnection(health.getBody(), beforeAcquire, acquired, "test-1");
@@ -89,7 +89,7 @@ class HikariJdbcMetricsEndpointTest {
 	}
 
 	@Test
-	void actuatorShouldPublishHikariJdbcMetricsForManuallyAddedDataSource() throws SQLException {
+	void actuatorShouldPublishjdbcMetricsForManuallyAddedDataSource() throws SQLException {
 		HikariConfig config = new HikariConfig();
 		config.setDriverClassName("org.h2.Driver");
 		config.setConnectionTestQuery("SELECT 1");
@@ -113,13 +113,13 @@ class HikariJdbcMetricsEndpointTest {
 					BDDAssertions.assertThat(r.getInt(1)).isEqualTo(5);
 				}
 				// connection should be visible in Actuator endpoint
-				ResponseEntity<String> health = restTemplate.getForEntity("/actuator/hikariJdbcMetrics", String.class, Map.of());
+				ResponseEntity<String> health = restTemplate.getForEntity("/actuator/jdbcMetrics", String.class, Map.of());
 				BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
 				System.out.println(health.getBody());
 				verifyPoolMetricsForOneActiveConnection(health.getBody(), beforeAcquire, acquired, "test-2");
 			}
 			// connection should have disappeared from Actuator
-			ResponseEntity<String> health = restTemplate.getForEntity("/actuator/hikariJdbcMetrics", String.class, Map.of());
+			ResponseEntity<String> health = restTemplate.getForEntity("/actuator/jdbcMetrics", String.class, Map.of());
 			BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
 			verifyPoolMetricsForNoActiveConnection(health.getBody(), "test-2");
 		}
