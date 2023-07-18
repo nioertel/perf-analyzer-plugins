@@ -16,13 +16,15 @@ on:
 
 jobs:
   build:
+    name: JDK ${{ matrix.java-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         java-version: [ 11, 17 ]
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
+    - name: Checkout source code
+      uses: actions/checkout@v3
+    - name: Set up JDK ${{ matrix.java-version }}
       uses: actions/setup-java@v3
       with:
         java-version: ${{ matrix.java-version }}
@@ -33,3 +35,5 @@ jobs:
     # Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.2
+      permissions:
+        contents: write
