@@ -6,7 +6,7 @@ Application plugins for performance analysis.
 - Provide a `java.sql.Connection` proxy that provides detailed insightes that may be useful when analyzing performance issues
 - Add minimal performance overhead so this can be active by default in production
 - Integrate with common connection pools, so far providing support for:
-  - HikariCP via an extension of com.zaxxer.hikari.HikariDataSource
+  - HikariCP via an extension of `com.zaxxer.hikari.HikariDataSource`
 
 ### Usage
 Maven:
@@ -42,6 +42,33 @@ try (EnhancedHikariDataSource dataSource = new EnhancedHikariDataSource(config))
 // ... boiler plate code
 ```
 
-## perf-analyzer-plugins-jdbc-actuator
-Spring Boot Actuator integration of [perf-analyzer-plugins-jdbc](#perf-analyzer-plugins-jdbc).
+## perf-analyzer-plugins-jdbc-spring-boot
+### Goals of this plugin
+- Provide Spring Boot integration of [perf-analyzer-plugins-jdbc](#perf-analyzer-plugins-jdbc), including
+  - auto configuration for `Enhanced*DataSource` (such as EnhancedHikariDataSource) if `spring.datasource.type` is set accordingly
+- Actuator endpoint `/actuator/jdbcMetrics`
+
+### Usage
+Maven:
+```xml
+<dependency>
+    <groupId>io.github.nioertel.perf</groupId>
+    <artifactId>perf-analyzer-plugins-jdbc-spring-boot</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+Spring Boot Config:
+```properties
+spring.datasource.type=io.github.nioertel.perf.jdbc.hikari.EnhancedHikariDataSource
+# apply any other HikariCP specific settings as usual (spring.datasource.hikari.*)
+```
+
+Java Code Snippet:
+```java
+// TODO
+```
+
+## perf-analyzer-plugins-common
+Shared utilities which are used across the different modules.
 
