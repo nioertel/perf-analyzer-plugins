@@ -1,5 +1,6 @@
 package io.github.nioertel.perf.utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public final class ClassUtils {
@@ -25,4 +26,22 @@ public final class ClassUtils {
 				.toString();
 	}
 
+	public static final Field getAccessibleField(String className, String fieldName) {
+		try {
+			return getAccessibleField(Class.forName(className), fieldName);
+		} catch (SecurityException | ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static final Field getAccessibleField(Class<?> clazz, String fieldName) {
+		Field f;
+		try {
+			f = clazz.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			throw new RuntimeException(e);
+		}
+		f.setAccessible(true);
+		return f;
+	}
 }

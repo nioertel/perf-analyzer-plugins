@@ -6,9 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.nioertel.perf.utils.TaskDecorator;
 
 public class ExecutionTrackingTaskDecorator implements TaskDecorator, ExecutionMetrics {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionTrackingTaskDecorator.class);
 
 	private final AtomicLong taskIdGenerator = new AtomicLong();
 
@@ -33,10 +38,20 @@ public class ExecutionTrackingTaskDecorator implements TaskDecorator, ExecutionM
 
 		@Override
 		public void run() {
+			boolean success = true;
 			try {
 				taskState.taskStarted();
 				delegate.run();
+			} catch (Throwable t) {
+				success = false;
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Task {} ({}) finished with error.", taskId, taskState.getTaskName(), t);
+				}
+				throw t;
 			} finally {
+				if (success && LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Task {} ({}) finished successfully.", taskId, taskState.getTaskName());
+				}
 				taskState.taskFinished();
 				activeTasks.remove(taskId);
 			}

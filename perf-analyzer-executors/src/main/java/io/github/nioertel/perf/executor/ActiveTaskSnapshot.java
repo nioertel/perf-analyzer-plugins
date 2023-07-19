@@ -4,6 +4,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.github.nioertel.perf.executor.ActiveTaskStats.State;
 import io.github.nioertel.perf.utils.DateHelper;
 
@@ -12,6 +15,10 @@ public class ActiveTaskSnapshot {
 	private static final ThreadMXBean THREAD_MX_BEAN = ManagementFactory.getThreadMXBean();
 
 	private final long taskId;
+
+	private final String taskName;
+
+	private final long submittingThreadId;
 
 	private final long executingThreadId;
 
@@ -29,9 +36,22 @@ public class ActiveTaskSnapshot {
 
 	private final long consumedUserTimeMillis;
 
-	public ActiveTaskSnapshot(long taskId, long executingThreadId, State state, LocalDateTime enqueueDate, LocalDateTime startDate,
-			long waitTimeUntilStartMillis, long activeSinceStartMillis, long consumedCpuTimeMillis, long consumedUserTimeMillis) {
+	@JsonCreator
+	public ActiveTaskSnapshot(//
+			@JsonProperty("taskId") long taskId, //
+			@JsonProperty("taskName") String taskName, //
+			@JsonProperty("submittingThreadId") long submittingThreadId, //
+			@JsonProperty("executingThreadId") long executingThreadId, //
+			@JsonProperty("state") State state, //
+			@JsonProperty("enqueueDate") LocalDateTime enqueueDate, //
+			@JsonProperty("startDate") LocalDateTime startDate, //
+			@JsonProperty("waitTimeUntilStartMillis") long waitTimeUntilStartMillis, //
+			@JsonProperty("activeSinceStartMillis") long activeSinceStartMillis, //
+			@JsonProperty("consumedCpuTimeMillis") long consumedCpuTimeMillis, //
+			@JsonProperty("consumedUserTimeMillis") long consumedUserTimeMillis) {
 		this.taskId = taskId;
+		this.taskName = taskName;
+		this.submittingThreadId = submittingThreadId;
 		this.executingThreadId = executingThreadId;
 		this.state = state;
 		this.enqueueDate = enqueueDate;
@@ -50,6 +70,8 @@ public class ActiveTaskSnapshot {
 
 		return new ActiveTaskSnapshot(//
 				stats.getTaskId(), // taskId
+				stats.getTaskName(), // taskName
+				stats.getSubmittingThreadId(), // submittingThreadId
 				stats.getExecutingThreadId(), // executingThreadId
 				stats.getState(), // state
 				DateHelper.toLocalDateTime(stats.getEnqueueDateEpochMillis()), // enqueueDate
@@ -63,6 +85,14 @@ public class ActiveTaskSnapshot {
 
 	public long getTaskId() {
 		return taskId;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public long getSubmittingThreadId() {
+		return submittingThreadId;
 	}
 
 	public long getExecutingThreadId() {

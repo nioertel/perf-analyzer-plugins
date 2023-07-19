@@ -6,5 +6,5 @@ public interface ExecutionMetrics {
 
 	String getName();
 
-	public List<ActiveTaskSnapshot> getActiveTasks();
+	List<ActiveTaskSnapshot> getActiveTasks();
 }

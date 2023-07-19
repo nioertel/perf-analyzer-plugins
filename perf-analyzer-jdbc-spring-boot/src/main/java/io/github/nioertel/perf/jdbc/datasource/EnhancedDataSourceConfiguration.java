@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 
 import io.github.nioertel.perf.jdbc.hikari.EnhancedHikariDataSource;
 
-class EnhancedDataSourceConfiguration {
+abstract class EnhancedDataSourceConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnhancedDataSourceConfiguration.class);
 

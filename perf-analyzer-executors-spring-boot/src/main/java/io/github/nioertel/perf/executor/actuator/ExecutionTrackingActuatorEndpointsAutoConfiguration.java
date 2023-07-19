@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 
 import io.github.nioertel.perf.executor.ExecutionMetrics;
+import io.github.nioertel.perf.executor.ExecutorStateInfoExtractor;
 
 @ConditionalOnWebApplication
 @ConditionalOnClass({ ThreadPoolExecutor.class })
@@ -20,8 +21,9 @@ public class ExecutionTrackingActuatorEndpointsAutoConfiguration {
 
 	@ConditionalOnBean({ ExecutionMetrics.class })
 	@Bean
-	ExecutorInsightsEndpoint executorInsightsEndpoint(List<ExecutionMetrics> executionMetrics) {
-		LOGGER.info("Creating executor insights actuator endpoint based on {} execution metrics providers.", executionMetrics.size());
-		return new ExecutorInsightsEndpoint(executionMetrics);
+	ExecutorInsightsEndpoint executorInsightsEndpoint(List<ExecutorStateInfoExtractor> executorStateInfos, List<ExecutionMetrics> executionMetrics) {
+		LOGGER.info("Creating executor insights actuator endpoint based on {} execution metrics providers and {} executor state info providers.",
+				executionMetrics.size(), executorStateInfos.size());
+		return new ExecutorInsightsEndpoint(executorStateInfos, executionMetrics);
 	}
 }

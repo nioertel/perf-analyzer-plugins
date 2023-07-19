@@ -4,15 +4,23 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.lang.ref.WeakReference;
 
+import io.github.nioertel.perf.utils.TaskNameExtractor;
+
 public class ActiveTaskStats {
 
 	private static final ThreadMXBean THREAD_MX_BEAN = ManagementFactory.getThreadMXBean();
 
 	public enum State {
-		WAITING, RUNNING, FINISHED
+		WAITING,
+		RUNNING,
+		FINISHED
 	}
 
 	private final long taskId;
+
+	private final String taskName;
+
+	private final long submittingThreadId;
 
 	private final long enqueueDateEpochMillis;
 
@@ -30,6 +38,8 @@ public class ActiveTaskStats {
 
 	public ActiveTaskStats(long taskId, Runnable task) {
 		this.taskId = taskId;
+		this.taskName = TaskNameExtractor.extractTaskName(task);
+		this.submittingThreadId = Thread.currentThread().getId();
 		this.taskReference = new WeakReference<>(task);
 		this.enqueueDateEpochMillis = System.currentTimeMillis();
 		this.state = State.WAITING;
@@ -45,6 +55,14 @@ public class ActiveTaskStats {
 
 	public Runnable getTask() {
 		return taskReference.get();
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public long getSubmittingThreadId() {
+		return submittingThreadId;
 	}
 
 	public State getState() {
