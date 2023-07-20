@@ -1,6 +1,16 @@
 # perf-analyzer-plugins
 Application plugins for performance analysis.
 
+----------------------------------------------------
+## Contents
+* [Module: perf-analyzer-jdbc](#perf-analyzer-jdbc)
+* [Module: perf-analyzer-jdbc-spring-boot](#perf-analyzer-jdbc-spring-boot)
+* [Module: perf-analyzer-executors](#perf-analyzer-executors)
+* [Module: perf-analyzer-executors-spring-boot](#perf-analyzer-executors-spring-boot)
+* [Module: perf-analyzer-common](#perf-analyzer-common)
+* [Module: perf-analyzer-test-helper](#perf-analyzer-test-helper)
+
+----------------------------------------------------
 ## perf-analyzer-jdbc
 ### Goals of this plugin
 - Provide a `java.sql.Connection` proxy that provides detailed insightes that may be useful when analyzing performance issues
@@ -42,10 +52,11 @@ try (EnhancedHikariDataSource dataSource = new EnhancedHikariDataSource(config))
 // ... boiler plate code
 ```
 
+----------------------------------------------------
 ## perf-analyzer-jdbc-spring-boot
 ### Goals of this plugin
 - Provide Spring Boot integration of [perf-analyzer-jdbc](#perf-analyzer-jdbc), including
-  - auto configuration for `Enhanced*DataSource` (such as EnhancedHikariDataSource) if `spring.datasource.type` is set accordingly
+  - Auto configuration for `Enhanced*DataSource` (such as `EnhancedHikariDataSource`) if `spring.datasource.type` is set accordingly
 - Actuator endpoint `/actuator/jdbcMetrics`
 
 ### Usage
@@ -69,14 +80,18 @@ Java Code Snippet:
 // TODO
 ```
 
+----------------------------------------------------
 ## perf-analyzer-executors
 TODO
 
+----------------------------------------------------
 ## perf-analyzer-executors-spring-boot
 TODO
 
+----------------------------------------------------
 ## perf-analyzer-common
 Shared utilities which are used across the different modules.
 
+----------------------------------------------------
 ## perf-analyzer-test-helper
 Tools for testing of the perf-analyzer-plugins. Only for internal use currently.
