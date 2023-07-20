@@ -22,7 +22,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import io.github.nioertel.perf.jdbc.actuator.JdbcMetricsEndpoint;
 import io.github.nioertel.perf.jdbc.actuator.test.TestApp;
 import io.github.nioertel.perf.jdbc.hikari.EnhancedHikariDataSource;
 import io.github.nioertel.perf.jdbc.tracker.IdentifiableConnection;
@@ -75,9 +74,14 @@ class JdbcMetricsEndpointTest {
 	void actuatorShouldPublishjdbcMetricsEndpoint() {
 		ResponseEntity<String> health = restTemplate.getForEntity("/actuator/jdbcMetrics", String.class, Map.of());
 		BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
-		BDDAssertions.assertThat((Map<?, ?>) JsonPath.parse(health.getBody()).json()).allSatisfy((k, v) -> {
-			BDDAssertions.assertThat(k).isEqualTo("connectionStatsByPool");
-		});
+		BDDAssertions.assertThat((Map<?, ?>) JsonPath.parse(health.getBody()).json())//
+				.hasSize(2)//
+				.anySatisfy((k, v) -> {
+					BDDAssertions.assertThat(k).isEqualTo("snapshotTime");
+				})//
+				.anySatisfy((k, v) -> {
+					BDDAssertions.assertThat(k).isEqualTo("connectionStatsByPool");
+				});
 	}
 
 	@Test

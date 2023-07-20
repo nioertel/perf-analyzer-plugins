@@ -44,6 +44,7 @@ class ExecutorInsightsEndpointTest {
 
 		private static final String TASK_EXECUTOR_NAME = "test-1";
 
+		// TODO: Can we autoconfigure this and assign later?
 		@Bean
 		ExecutionTrackingTaskDecoratorSpring executionTrackingTaskDecoratorSpring() {
 			return new ExecutionTrackingTaskDecoratorSpring(TASK_EXECUTOR_NAME);
@@ -60,6 +61,7 @@ class ExecutorInsightsEndpointTest {
 			return executor;
 		}
 
+		// TODO: Can we autoconfigure this and assign later?
 		@Bean
 		ExecutorStateInfoExtractor executorStateInfoExtractor(ThreadPoolTaskExecutor executorService) {
 			return new ThreadPoolTaskExecutorStateInfoExtractor(TASK_EXECUTOR_NAME, executorService);
@@ -172,9 +174,14 @@ class ExecutorInsightsEndpointTest {
 	void actuatorShouldPublishjdbcMetricsEndpoint() {
 		ResponseEntity<String> health = restTemplate.getForEntity("/actuator/executorInsights", String.class, Map.of());
 		BDDAssertions.assertThat(health.getStatusCode()).isSameAs(HttpStatus.OK);
-		BDDAssertions.assertThat((Map<?, ?>) JsonPath.parse(health.getBody()).json()).allSatisfy((k, v) -> {
-			BDDAssertions.assertThat(k).isEqualTo("executionMetricsByProvider");
-		});
+		BDDAssertions.assertThat((Map<?, ?>) JsonPath.parse(health.getBody()).json())//
+				.hasSize(2)//
+				.anySatisfy((k, v) -> {
+					BDDAssertions.assertThat(k).isEqualTo("snapshotTime");
+				})//
+				.anySatisfy((k, v) -> {
+					BDDAssertions.assertThat(k).isEqualTo("executionMetricsByProvider");
+				});
 	}
 
 	@Test

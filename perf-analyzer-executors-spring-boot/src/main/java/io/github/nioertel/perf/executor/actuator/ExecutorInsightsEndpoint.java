@@ -1,5 +1,6 @@
 package io.github.nioertel.perf.executor.actuator;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.nioertel.perf.executor.ActiveTaskSnapshot;
 import io.github.nioertel.perf.executor.ExecutionMetrics;
 import io.github.nioertel.perf.executor.ExecutorStateInfoExtractor;
+import io.github.nioertel.perf.utils.DateHelper;
 
 @Endpoint(id = "executorInsights")
 public class ExecutorInsightsEndpoint {
@@ -44,23 +46,32 @@ public class ExecutorInsightsEndpoint {
 
 	public static class ExecutionMetricsOverall {
 
+		private final LocalDateTime snapshotTime;
+
 		private final Map<String, ExecutionMetricsForProvider> executionMetricsByProvider;
 
 		@JsonCreator
 		private ExecutionMetricsOverall(//
+				@JsonProperty("snapshotTime") LocalDateTime snapshotTime, //
 				@JsonProperty("executionMetricsByProvider") Map<String, ExecutionMetricsForProvider> executionMetricsByProvider) {
+			this.snapshotTime = snapshotTime;
 			this.executionMetricsByProvider = new HashMap<>(executionMetricsByProvider);
 		}
 
 		public static ExecutionMetricsOverall fromExecutionMetricsByProvider(Map<String, ExecutorStateInfoExtractor> executorStateInfosByProvider,
 				Map<String, ExecutionMetrics> executionMetricsByProvider) {
 			return new ExecutionMetricsOverall(//
+					LocalDateTime.now(DateHelper.EUROPE_BERLIN), //
 					executionMetricsByProvider.entrySet().stream()//
 							.map(entry -> ExecutionMetricsForProvider.fromExecutionMetrics(//
 									entry.getKey(), //
 									executorStateInfosByProvider.get(entry.getKey()), //
 									entry.getValue().getActiveTasks()))//
 							.collect(Collectors.toMap(e -> e.getProviderName(), e -> e)));
+		}
+
+		public LocalDateTime getSnapshotTime() {
+			return snapshotTime;
 		}
 
 		public Map<String, ExecutionMetricsForProvider> getExecutionMetricsByProvider() {

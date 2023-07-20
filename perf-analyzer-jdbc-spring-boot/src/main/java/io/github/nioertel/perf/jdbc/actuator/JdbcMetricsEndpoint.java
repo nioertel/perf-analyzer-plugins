@@ -79,15 +79,19 @@ public class JdbcMetricsEndpoint {
 
 	public static class JdbcConnectionStatsDescriptors {
 
+		private final LocalDateTime snapshotTime;
+
 		private final Map<String, JdbcConnectionStatsDescriptor> connectionStatsByPool;
 
-		private JdbcConnectionStatsDescriptors(Map<String, JdbcConnectionStatsDescriptor> connectionStatsByPool) {
+		private JdbcConnectionStatsDescriptors(LocalDateTime snapshotTime, Map<String, JdbcConnectionStatsDescriptor> connectionStatsByPool) {
+			this.snapshotTime = snapshotTime;
 			this.connectionStatsByPool = new HashMap<>(connectionStatsByPool);
 		}
 
 		public static JdbcConnectionStatsDescriptors fromConnectionStats(Map<String, JdbcConnectionMetrics> connectionMetricsByPool,
 				boolean includeStackTraces) {
 			return new JdbcConnectionStatsDescriptors(//
+					LocalDateTime.now(DateHelper.EUROPE_BERLIN), //
 					connectionMetricsByPool.entrySet().stream()//
 							.map(entry -> JdbcConnectionStatsDescriptor.fromConnectionStats(//
 									entry.getKey(), //
@@ -97,10 +101,16 @@ public class JdbcMetricsEndpoint {
 		}
 
 		public JdbcConnectionStatsDescriptors filterForThread(long threadId) {
-			return new JdbcConnectionStatsDescriptors(connectionStatsByPool.entrySet().stream().collect(Collectors.toMap(//
-					e -> e.getKey(), //
-					e -> e.getValue().filterForThread(threadId)//
-			)));
+			return new JdbcConnectionStatsDescriptors(//
+					LocalDateTime.now(DateHelper.EUROPE_BERLIN), //
+					connectionStatsByPool.entrySet().stream().collect(Collectors.toMap(//
+							e -> e.getKey(), //
+							e -> e.getValue().filterForThread(threadId)//
+					)));
+		}
+
+		public LocalDateTime getSnapshotTime() {
+			return snapshotTime;
 		}
 
 		public Map<String, JdbcConnectionStatsDescriptor> getConnectionStatsByPool() {
@@ -207,16 +217,16 @@ public class JdbcMetricsEndpoint {
 
 		private final LocalDateTime acquired;
 
-		private final long activeSeconds;
+		private final long activeMillis;
 
 		public ActiveJdbcConnectionInsights(long connectionInstanceIdentifier, long bindingThreadId, String bindingThreadName,
-				LocalDateTime acquireStart, LocalDateTime acquired, long activeSeconds) {
+				LocalDateTime acquireStart, LocalDateTime acquired, long activeMillis) {
 			this.connectionInstanceIdentifier = connectionInstanceIdentifier;
 			this.bindingThreadId = bindingThreadId;
 			this.bindingThreadName = bindingThreadName;
 			this.acquireStart = acquireStart;
 			this.acquired = acquired;
-			this.activeSeconds = activeSeconds;
+			this.activeMillis = activeMillis;
 		}
 
 		public static ActiveJdbcConnectionInsights fromConnectionStats(JdbcConnectionStatsSnapshot connectionStats) {
@@ -226,7 +236,7 @@ public class JdbcMetricsEndpoint {
 					connectionStats.getBindingThreadName(), //
 					DateHelper.toLocalDateTime(connectionStats.getAcquireStartTimestamp()), //
 					DateHelper.toLocalDateTime(connectionStats.getAcquiredTimestamp()), //
-					(System.currentTimeMillis() - connectionStats.getAcquiredTimestamp()) / 1_000L);
+					System.currentTimeMillis() - connectionStats.getAcquiredTimestamp());
 		}
 
 		public long getConnectionInstanceIdentifier() {
@@ -249,8 +259,8 @@ public class JdbcMetricsEndpoint {
 			return acquired;
 		}
 
-		public long getActiveSeconds() {
-			return activeSeconds;
+		public long getActiveMillis() {
+			return activeMillis;
 		}
 
 	}
