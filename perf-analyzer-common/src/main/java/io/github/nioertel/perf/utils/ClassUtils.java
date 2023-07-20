@@ -38,7 +38,7 @@ public final class ClassUtils {
 		try {
 			return getAccessibleFieldIfPossible(Class.forName(className), fieldName);
 		} catch (SecurityException | ClassNotFoundException e) {
-			throw null;
+			return null;
 		}
 	}
 
