@@ -14,7 +14,10 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<!-- 3rd party dependencies -->
 		<spring-boot.version>2.7.10</spring-boot.version>
+		<!-- Spring cloud modules (see https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions) -->
+		<spring-cloud-sleuth.version>3.1.1</spring-cloud-sleuth.version>
 		<junit-jupiter.version>5.9.3</junit-jupiter.version>
+		<mockito.version>5.4.0</mockito.version>
 		<assertj.version>3.24.2</assertj.version>
 		<hikaricp.version>5.0.1</hikaricp.version>
 		<h2.version>2.2.220</h2.version>
@@ -45,6 +48,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-web</artifactId>
 				<version>${spring-boot.version}</version>
 			</dependency>
@@ -58,6 +66,12 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-configuration-processor</artifactId>
 				<version>${spring-boot.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-sleuth</artifactId>
+				<version>${spring-cloud-sleuth.version}</version>
 			</dependency>
 
 			<dependency>
@@ -85,6 +99,12 @@
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-api</artifactId>
 				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<version>${mockito.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

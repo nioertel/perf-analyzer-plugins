@@ -34,12 +34,31 @@ public final class ClassUtils {
 		}
 	}
 
+	public static final Field getAccessibleFieldIfPossible(String className, String fieldName) {
+		try {
+			return getAccessibleFieldIfPossible(Class.forName(className), fieldName);
+		} catch (SecurityException | ClassNotFoundException e) {
+			throw null;
+		}
+	}
+
 	public static final Field getAccessibleField(Class<?> clazz, String fieldName) {
 		Field f;
 		try {
 			f = clazz.getDeclaredField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e) {
 			throw new RuntimeException(e);
+		}
+		f.setAccessible(true);
+		return f;
+	}
+
+	public static final Field getAccessibleFieldIfPossible(Class<?> clazz, String fieldName) {
+		Field f;
+		try {
+			f = clazz.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			return null;
 		}
 		f.setAccessible(true);
 		return f;
